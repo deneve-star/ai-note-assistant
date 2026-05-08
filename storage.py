@@ -67,3 +67,24 @@ def delete_note(note_id: int) -> bool:
     deleted = cursor.rowcount > 0
     conn.close()
     return deleted
+
+
+def update_tags(note_id: int, tags: str) -> bool:
+    conn = get_connection()
+    cursor = conn.execute(
+        "UPDATE notes SET tags = ? WHERE id = ?",
+        (tags, note_id),
+    )
+    conn.commit()
+    updated = cursor.rowcount > 0
+    conn.close()
+    return updated
+
+
+def get_note_by_id(note_id: int) -> dict | None:
+    conn = get_connection()
+    row = conn.execute(
+        "SELECT * FROM notes WHERE id = ?", (note_id,)
+    ).fetchone()
+    conn.close()
+    return dict(row) if row else None
